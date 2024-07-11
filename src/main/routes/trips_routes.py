@@ -4,7 +4,9 @@ from flask import jsonify, Blueprint, request
 from src.controllers.trip_creator import TripCreator
 from src.controllers.trip_finder import TripFinder
 from src.controllers.trip_confirmer import TripConfirmer
+
 from src.controllers.link_creator import LinkCreator
+from src.controllers.link_finder import LinkFinder
 
 # Import Repositories
 from src.models.repositories.emails_to_invite_repository import EmailsToInviteRepository
@@ -47,12 +49,22 @@ def confirm_trip(trip_id):
     
     return jsonify(response['body']), response['status_code']
 
-@trips_routes_bp.route('/trips/<trip_id>/link/create', methods=['POST'])
+@trips_routes_bp.route('/trips/<trip_id>/links', methods=['POST'])
 def create_link(trip_id):
     conn = db_connection_handler.get_connection()
     link_repository = LinksRepository(conn)
     controller = LinkCreator(link_repository)
     
     response = controller.create(request.json, trip_id)
+    
+    return jsonify(response['body']), response['status_code']
+
+@trips_routes_bp.route('/trips/<trip_id>/links', methods=['GET'])
+def find_trip_links(trip_id):
+    conn = db_connection_handler.get_connection()
+    link_repository = LinksRepository(conn)
+    controller = LinkFinder(link_repository)
+    
+    response = controller.find(trip_id)
     
     return jsonify(response['body']), response['status_code']
