@@ -1,5 +1,7 @@
 import uuid
 from typing import Dict
+from src.drivers.email_sender import send_email
+from src.ethereal_email_client.client.create_email import account_instance
 from src.models.repositories.emails_to_invite_repository import EmailsToInviteRepository
 from src.models.repositories.trips_repository import TripsRepository
 
@@ -30,6 +32,13 @@ class TripCreator:
                         "id": str(uuid.uuid4()),
                     })
             
+            account = account_instance.get_account()
+            send_email(
+                to_addrs=[body['owner_email']],
+                body=f'http://localhost:3000/trips/{trip_id}/confirm',
+                account_infos=account,
+            )
+
             return {
                 "body": {"id": trip_id,},
                 "status_code": 201
