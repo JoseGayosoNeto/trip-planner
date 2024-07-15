@@ -21,6 +21,7 @@ from src.models.repositories.trips_repository import TripsRepository
 from src.models.repositories.links_repository import LinksRepository
 from src.models.repositories.participants_repository import ParticipantsRepository
 from src.models.repositories.activities_repository import ActivitiesRepository
+from src.models.repositories.users_repository import UsersRepository
 
 # Import Connection
 from src.models.settings.db_connection_handler import db_connection_handler
@@ -32,7 +33,8 @@ def create_trip():
     conn = db_connection_handler.get_connection()
     trips_repository = TripsRepository(conn)
     emails_repository = EmailsToInviteRepository(conn)
-    controller = TripCreator(trips_repository, emails_repository)
+    users_repository = UsersRepository(conn)
+    controller = TripCreator(trips_repository, emails_repository, users_repository)
     
     response = controller.create(request.json)
     

@@ -1,3 +1,11 @@
+CREATE TABLE IF NOT EXISTS 'user' (
+    id TEXT PRIMARY KEY,
+    name TEXT NOT NULL,
+    email TEXT UNIQUE NOT NULL,
+    password TEXT NOT NULL,
+    is_admin INTEGER
+);
+
 CREATE TABLE IF NOT EXISTS 'trips' (
     id TEXT PRIMARY KEY,
     destination TEXT NOT NULL,
@@ -5,7 +13,9 @@ CREATE TABLE IF NOT EXISTS 'trips' (
     end_date DATETIME,
     owner_name TEXT NOT NULL,
     owner_email TEXT NOT NULL,
-    status INTEGER -- 1 para verdadeiro (true), 0 para falso (false)
+    status INTEGER, -- 1 para verdadeiro (true), 0 para falso (false)
+    FOREIGN KEY (owner_name) REFERENCES user(name),
+    FOREIGN KEY (owner_email) REFERENCES user(email)
 );
 
 CREATE TABLE IF NOT EXISTS 'emails_to_invite' (
