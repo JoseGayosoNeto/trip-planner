@@ -15,11 +15,11 @@ class UserCreator:
             password = body.get('password')
             
             user_infos = {
+                **body,
                 'id': user_id,
                 'password': generate_password_hash(password),
-                **body,
             }
-            self.__user_repository.create(user_infos)
+            self.__user_repository.create_user(user_infos)
             
             return {
                 "body": {"id": user_id},

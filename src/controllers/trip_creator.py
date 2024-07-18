@@ -1,3 +1,4 @@
+from flask_jwt_extended import get_jwt
 import uuid
 from typing import Dict
 from src.drivers.email_sender import send_email
@@ -22,7 +23,8 @@ class TripCreator:
             trip_id = str(uuid.uuid4())
             check_owner_email = self.__users_repository.find_user_by_email(owner_email)
             check_owner_name = self.__users_repository.find_user_by_name(owner_name)
-            if check_owner_email and check_owner_name:
+            claims = get_jwt()
+            if check_owner_email and check_owner_name and claims['user_id'] == check_owner_email[0]:
                 trip_infos = {
                     **body,
                     'id': trip_id,

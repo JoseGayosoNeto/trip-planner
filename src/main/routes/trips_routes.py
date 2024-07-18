@@ -1,4 +1,5 @@
 from flask import jsonify, Blueprint, request
+from flask_jwt_extended import jwt_required
 
 # Import Controllers
 from src.controllers.trip_creator import TripCreator
@@ -29,6 +30,7 @@ from src.models.settings.db_connection_handler import db_connection_handler
 trips_routes_bp = Blueprint("trip_routes", __name__)
 
 @trips_routes_bp.route('/trips', methods=['POST'])
+@jwt_required()
 def create_trip():
     conn = db_connection_handler.get_connection()
     trips_repository = TripsRepository(conn)
@@ -41,10 +43,12 @@ def create_trip():
     return jsonify(response['body']), response['status_code']
 
 @trips_routes_bp.route('/trips/<trip_id>', methods=['GET'])
+@jwt_required()
 def get_trip(trip_id):
     conn = db_connection_handler.get_connection()
     trips_repository = TripsRepository(conn)
-    controller = TripFinder(trips_repository)
+    users_repository = UsersRepository(conn)
+    controller = TripFinder(trips_repository, users_repository)
     
     response = controller.find_trip_details(trip_id)
     
@@ -61,6 +65,7 @@ def confirm_trip(trip_id):
     return jsonify(response['body']), response['status_code']
 
 @trips_routes_bp.route('/trips/<trip_id>/links', methods=['POST'])
+@jwt_required()
 def create_link(trip_id):
     conn = db_connection_handler.get_connection()
     link_repository = LinksRepository(conn)
@@ -71,6 +76,7 @@ def create_link(trip_id):
     return jsonify(response['body']), response['status_code']
 
 @trips_routes_bp.route('/trips/<trip_id>/links', methods=['GET'])
+@jwt_required()
 def get_trip_links(trip_id):
     conn = db_connection_handler.get_connection()
     link_repository = LinksRepository(conn)
@@ -81,6 +87,7 @@ def get_trip_links(trip_id):
     return jsonify(response['body']), response['status_code']
 
 @trips_routes_bp.route('/trips/<trip_id>/invites', methods=['POST'])
+@jwt_required()
 def invite_to_trip(trip_id):
     conn = db_connection_handler.get_connection()
     participants_repository = ParticipantsRepository(conn)
@@ -92,6 +99,7 @@ def invite_to_trip(trip_id):
     return jsonify(response['body']), response['status_code']
 
 @trips_routes_bp.route('/trips/<trip_id>/participants', methods=['GET'])
+@jwt_required()
 def get_participants(trip_id):
     conn = db_connection_handler.get_connection()
     participants_repository = ParticipantsRepository(conn)
@@ -102,6 +110,7 @@ def get_participants(trip_id):
     return jsonify(response['body']), response['status_code']
 
 @trips_routes_bp.route('/participants/<participant_id>/confirm', methods=['PATCH'])
+@jwt_required()
 def confirm_participant(participant_id):
     conn = db_connection_handler.get_connection()
     participants_repository = ParticipantsRepository(conn)
@@ -112,6 +121,7 @@ def confirm_participant(participant_id):
     return jsonify(response['body']), response['status_code']
 
 @trips_routes_bp.route('/trips/<trip_id>/activities', methods=['POST'])
+@jwt_required()
 def create_activity(trip_id):
     conn = db_connection_handler.get_connection()
     activities_repository = ActivitiesRepository(conn)
@@ -122,6 +132,7 @@ def create_activity(trip_id):
     return jsonify(response['body']), response['status_code']
 
 @trips_routes_bp.route('/trips/<trip_id>/activities', methods=['GET'])
+@jwt_required()
 def get_activities(trip_id):
     conn = db_connection_handler.get_connection()
     activities_repository = ActivitiesRepository(conn)

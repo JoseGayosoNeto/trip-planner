@@ -46,3 +46,23 @@ class UserFinder:
                 "body": {"error": "Bad Request", "message": str(e)},
                 "status_code": 400,
             }
+
+    def find_user_from_name(self, user_name: str) -> Dict:
+        try:
+            user = self.__users_repository.find_user_by_name(user_name)
+            if not user:
+                raise ValueError("User not found.")
+
+            return {
+                "body": {
+                    "id": user[0],
+                    "name": user[1],
+                    "email": user[2],
+                    "is_admin": user[4],
+                }
+            }
+        except Exception as e:
+            return {
+                "body": {"error": "Bad Request", "message": str(e)},
+                "status_code": 400,
+            }
